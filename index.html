@@ -1,0 +1,278 @@
+<!-- DOC
+https://threejs.org/docs/index.html#manual/en/introduction/Drawing-lines
+https://sbcode.net/threejs/geometry-to-buffergeometry/
+-->
+<html>
+  <head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.js"></script>
+
+    <style>
+      body {
+        background-color: #87CEEB;
+        margin: 0px;
+        overflow: hidden;
+      }
+    </style>
+
+    <title>Three.js basic setup</title>
+  </head>
+
+  <body>
+    <div id="textReloadPage" style="display: none"><b>Reload page to create a new 3D scene</b></div>
+
+    <div id="beforeLoadingSceneOptions">
+      Number columns facade : <select id="numberColumnsFacade">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option selected="selected" value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      Rule Number Long Side : <select id="factorRuleNumberColLongSide">
+        <option value="two_n_minus_one">2n - 1</option>
+        <option value="two_n">2n</option>
+        <option value="two_n_plus_one">2n + 1</option>
+      </select>
+
+      <!-- Plan Typology : <select id="typologyPlan">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select> -->
+
+      <button onclick="generate3dTemple()">GENERATE 3D TEMPLE</button>
+    </div>
+
+    <script>
+      // generate3dTemple()
+
+      function generate3dTemple() {
+        var idFactorRuleNumberColSide = document.getElementById('factorRuleNumberColLongSide').value
+
+        document.getElementById('textReloadPage').style.display = '';
+        document.getElementById('beforeLoadingSceneOptions').style.display = 'none';
+        // create a WebGLRenderer and set its width and height
+        var renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        // add the automatically created canvas element to the page
+        document.body.appendChild( renderer.domElement );
+
+        // create a Scene
+        var onRenderFcts= [];
+        var scene = new THREE.Scene();
+        scene.name = 'scene';
+
+        // create a PerspectiveCamera
+        var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 10000);
+        camera.position.set( 0, 0, 100 );
+        camera.fov = 20; // ZOOM
+        camera.updateProjectionMatrix();
+        var aspect = window.innerWidth / window.innerHeight;
+        var nearClippingPlane = 0.1;
+        var farClippingPlane = 1000;
+  			const width = 30;
+  			const height = 30;
+
+  			let geometry = new THREE.Geometry()
+  			geometry.vertices.push(new THREE.Vector3(-5, 0, 0))
+  			geometry.vertices.push(new THREE.Vector3(5, 0, 0))
+  			let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00 }))
+
+        // ----------------------------
+        var numberCol = document.getElementById('numberColumnsFacade').value;
+        var distBetwCols = 5;
+        // ----------------------------
+
+
+        var podiumResult;
+        // var goldenNumber = 1.618
+        var columnResult;
+        var lengthSide = 0;
+        var widthSide = 0;
+
+        var numberColLongSide = 0;
+
+        if (idFactorRuleNumberColSide == 'two_n_minus_one') {
+          numberColLongSide = numberCol*2 - 1;
+        } else if (idFactorRuleNumberColSide == 'two_n') {
+          numberColLongSide = numberCol*2;
+        } else if (idFactorRuleNumberColSide == 'two_n_plus_one') {
+          numberColLongSide = numberCol*2 + 1;
+        }
+
+        // FRONT
+        for (var iCol = 0; iCol < numberCol; iCol++) {
+          columnResult = drawOneSideColumns(false, 'blue');
+          scene.add(columnResult);
+          columnResult.position.x = iCol*distBetwCols;
+          columnResult.position.y = distBetwCols;
+          if (iCol == numberCol-1) {
+            if (idFactorRuleNumberColSide == 'two_n_minus_one') {
+              lengthSide = iCol*distBetwCols
+            } else if (idFactorRuleNumberColSide == 'two_n') {
+              lengthSide = iCol*distBetwCols+distBetwCols/2
+            } else if (idFactorRuleNumberColSide == 'two_n_plus_one') {
+              lengthSide = iCol*distBetwCols+distBetwCols
+            }
+          }
+        }
+
+        // LEFT SIDE
+        for (var iCol = 0; iCol < numberColLongSide; iCol++) {
+          columnResult = drawOneSideColumns(false, 'green');
+          scene.add(columnResult);
+          columnResult.position.z = -iCol*distBetwCols;
+          columnResult.position.y = distBetwCols;
+          if (iCol == numberCol-1) {
+            widthSide = iCol*distBetwCols
+          }
+        }
+
+        // BACK SIDE
+        for (var iCol = 0; iCol < numberCol; iCol++) {
+          columnResult = drawOneSideColumns(false, 'red');
+          scene.add(columnResult);
+          columnResult.position.z = (-distBetwCols*numberColLongSide)+distBetwCols;
+          columnResult.position.x = iCol*distBetwCols;
+          columnResult.position.y = distBetwCols;
+        }
+
+        // RIGHT SIDE
+        for (var iCol = 0; iCol < numberColLongSide; iCol++) {
+          columnResult = drawOneSideColumns(false, 'white');
+          scene.add(columnResult);
+          columnResult.position.z = -iCol*distBetwCols;
+          columnResult.position.x = (distBetwCols*numberCol)-distBetwCols;
+          columnResult.position.y = distBetwCols;
+        }
+
+        podiumResult = drawPodium(distBetwCols*numberCol, distBetwCols*numberColLongSide);
+        scene.add(podiumResult);
+        podiumResult.position.z = -lengthSide;
+        podiumResult.position.x = widthSide/2;
+        podiumResult.position.y = -2.5;
+
+
+        //////////////////////////////////////////////////////////////////////////////////
+      	//		set 3 point lighting						//
+      	//////////////////////////////////////////////////////////////////////////////////
+        ;(function()
+        {
+          // add a ambient light
+          var light	= new THREE.AmbientLight( 0x020202 )
+          scene.add( light )
+          // add a light in front
+          var light	= new THREE.DirectionalLight('white', 1)
+          light.position.set(0.5, 0.5, 2)
+          scene.add( light )
+          // add a light behind
+          var light	= new THREE.DirectionalLight('white', 0.75)
+          light.position.set(-0.5, 2.5, -2)
+          scene.add( light )
+        })()
+
+  			scene.add( line );
+
+  			const size = 100;
+  			const divisions = 10;
+
+  			const gridHelper = new THREE.GridHelper( size, divisions );
+  			scene.add( gridHelper );
+
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //		Camera Controls							//
+        //////////////////////////////////////////////////////////////////////////////////
+        var mouse	= {x : 0, y : 0}
+        document.addEventListener('mousemove', function(event){
+          mouse.x	= (event.clientX / window.innerWidth ) - 0.5
+          mouse.y	= (event.clientY / window.innerHeight) - 0.5
+        }, false)
+        onRenderFcts.push(function(delta, now){
+          camera.position.x += (mouse.x*99 - camera.position.x) * (delta*3)
+          camera.position.y += (mouse.y*99 - camera.position.y + 1) * (delta*3)
+          camera.lookAt( scene.position )
+        })
+
+        //////////////////////////////////////////////////////////////////////////////////
+      	//		render the scene						//
+      	//////////////////////////////////////////////////////////////////////////////////
+      	onRenderFcts.push(function(){
+      		renderer.render( scene, camera );
+      	})
+
+        //////////////////////////////////////////////////////////////////////////////////
+      	//		loop runner							//
+      	//////////////////////////////////////////////////////////////////////////////////
+      	var lastTimeMsec= null
+      	requestAnimationFrame(function animate(nowMsec){
+      		// keep looping
+      		requestAnimationFrame( animate );
+      		// measure time
+      		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+      		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+      		lastTimeMsec	= nowMsec
+      		// call each update function
+      		onRenderFcts.forEach(function(onRenderFct){
+      			onRenderFct(deltaMsec/1000, nowMsec/1000)
+      		})
+      	})
+
+        function drawOneSideColumns(angleRotation = false, color = 'lightgoldenrodyellow') // ctx, x_StartingPoint, y_StartingPoint, oneSquareSize, resultSquareLength, resultSquareWidth, numberColumns, cardinalSide
+        {
+          var columnModel = new THREE.CylinderGeometry( 1, 0.8, 10, 12 );
+          var material = new THREE.MeshStandardMaterial({color: color});
+          var cylinder = new THREE.Mesh(columnModel, material);
+          if (angleRotation !== true) {
+            // cylinder.rotation.x = Math.PI / 2;
+            cylinder.rotation.z = Math.PI / 2;
+            cylinder.rotation.y = Math.PI / 2;
+            cylinder.rotation.x = Math.PI / 2;
+          }
+          return cylinder;
+
+          // var fixedColumnDistanceXorY = x_StartingPoint - (oneSquareSize/2);
+          // var fixedColumnPositionXorY = y_StartingPoint - (oneSquareSize/2);
+          // var columnRadius = oneSquareSize/4;
+          //
+          // for (var col = 1 ; col <= numberColumns ; col++)
+          // {
+          //   if (cardinalSide == 'north')
+          //   {
+          //     drawColonnade(ctx, fixedColumnDistanceXorY, fixedColumnPositionXorY, oneSquareSize, col, 'north');
+          //   } else if (cardinalSide == 'south') {
+          //     drawColonnade(ctx, fixedColumnDistanceXorY, fixedColumnPositionXorY, oneSquareSize, col, 'south', resultSquareLength);
+          //   }
+          // }
+        }
+
+        function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20) // ctx, x_StartingPoint, y_StartingPoint, oneSquareSize, resultSquareLength, resultSquareWidth, numberColumns, cardinalSide
+        {
+          var podiumModel = new THREE.BoxGeometry( sizePodiumLength, 5, sizePodiumWidth, 12 );
+          var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+          var box = new THREE.Mesh(podiumModel, material);
+          return box;
+        }
+      }
+
+    </script>
+  </body>
+
+</html>
