@@ -44,19 +44,6 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="two_n_plus_one">2n + 1</option>
       </select>
 
-      <!-- Plan Typology : <select id="typologyPlan">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-      </select> -->
-
       <button onclick="generate3dTemple()">GENERATE 3D TEMPLE</button>
     </div>
 
@@ -64,42 +51,19 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       // generate3dTemple()
 
       function generate3dTemple() {
-        var idFactorRuleNumberColSide = document.getElementById('factorRuleNumberColLongSide').value
-
-        document.getElementById('textReloadPage').style.display = '';
-        document.getElementById('beforeLoadingSceneOptions').style.display = 'none';
-        // create a WebGLRenderer and set its width and height
-        var renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        // add the automatically created canvas element to the page
-        document.body.appendChild( renderer.domElement );
-
-        // create a Scene
-        var onRenderFcts= [];
         var scene = new THREE.Scene();
-        scene.name = 'scene';
+        setUp(scene);
+        drawArchitecturalElements(scene);
+      }
 
-        // create a PerspectiveCamera
-        var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 10000);
-        camera.position.set( 0, 0, 100 );
-        camera.fov = 20; // ZOOM
-        camera.updateProjectionMatrix();
-        var aspect = window.innerWidth / window.innerHeight;
-        var nearClippingPlane = 0.1;
-        var farClippingPlane = 1000;
-  			const width = 30;
-  			const height = 30;
-
-  			let geometry = new THREE.Geometry()
-  			geometry.vertices.push(new THREE.Vector3(-5, 0, 0))
-  			geometry.vertices.push(new THREE.Vector3(5, 0, 0))
-  			let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00 }))
-
+      function drawArchitecturalElements(scene) {
+        var idFactorRuleNumberColSide = document.getElementById('factorRuleNumberColLongSide').value
         // ----------------------------
         var numberCol = document.getElementById('numberColumnsFacade').value;
+        var heightColumn = 10;
         var distBetwCols = 5;
+        var thicknessColumn = 2;
         // ----------------------------
-
 
         var podiumResult;
         // var goldenNumber = 1.618
@@ -119,7 +83,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         // FRONT
         for (var iCol = 0; iCol < numberCol; iCol++) {
-          columnResult = drawOneSideColumns(false, 'blue');
+          columnResult = drawOneSideColumns(false, 'blue', heightColumn);
           scene.add(columnResult);
           columnResult.position.x = iCol*distBetwCols;
           columnResult.position.y = distBetwCols;
@@ -136,7 +100,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         // LEFT SIDE
         for (var iCol = 0; iCol < numberColLongSide; iCol++) {
-          columnResult = drawOneSideColumns(false, 'green');
+          columnResult = drawOneSideColumns(false, 'green', heightColumn);
           scene.add(columnResult);
           columnResult.position.z = -iCol*distBetwCols;
           columnResult.position.y = distBetwCols;
@@ -147,7 +111,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         // BACK SIDE
         for (var iCol = 0; iCol < numberCol; iCol++) {
-          columnResult = drawOneSideColumns(false, 'red');
+          columnResult = drawOneSideColumns(false, 'red', heightColumn);
           scene.add(columnResult);
           columnResult.position.z = (-distBetwCols*numberColLongSide)+distBetwCols;
           columnResult.position.x = iCol*distBetwCols;
@@ -156,7 +120,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         // RIGHT SIDE
         for (var iCol = 0; iCol < numberColLongSide; iCol++) {
-          columnResult = drawOneSideColumns(false, 'white');
+          columnResult = drawOneSideColumns(false, 'white', heightColumn);
           scene.add(columnResult);
           columnResult.position.z = -iCol*distBetwCols;
           columnResult.position.x = (distBetwCols*numberCol)-distBetwCols;
@@ -169,10 +133,127 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         podiumResult.position.x = widthSide/2;
         podiumResult.position.y = -2.5;
 
+        architraveResult = drawArchitrave(distBetwCols*numberCol, distBetwCols*numberColLongSide);
+        scene.add(architraveResult);
+        architraveResult.position.z = -lengthSide;
+        architraveResult.position.x = widthSide/2;
+        architraveResult.position.y = heightColumn;
+
+        // TODO : Ici c'est un périptère donc 4 côtés à répliquer.
+        // allMetopesNumber = parseInt(numberColLongSide)*2 + parseInt(numberCol)*2 + 2;
+        shortSideMetopesNumber = (numberCol)*2 + 1;
+
+        var triglyphLength = 1;
+
+        // metopesNumber = metopesNumber*4; // TODO : Ici c'est un périptère donc 4 côtés à répliquer.
+
+        doricFriseResult = drawDoricFrise(distBetwCols*numberCol, distBetwCols*numberColLongSide, shortSideMetopesNumber, triglyphLength);
+        scene.add(doricFriseResult[0]);
+        doricFriseResult[0].position.z = -lengthSide;
+        doricFriseResult[0].position.x = widthSide/2;
+        doricFriseResult[0].position.y = heightColumn+distBetwCols/4;
+
+        for (var i = 1; i <= shortSideMetopesNumber; i++) {
+          scene.add(doricFriseResult[1][i]);
+
+          doricFriseResult[1][i].position.z = 2.5; // NOMBRE MAGIQUE ?
+
+          var totalLengthArchitrave = widthSide + thicknessColumn;
+
+          if (i < numberCol*2 + 2) {
+            if (i == 1) {
+              doricFriseResult[1][i].position.x = -thicknessColumn;
+            } else if (i == shortSideMetopesNumber) {
+              doricFriseResult[1][i].position.x = totalLengthArchitrave;
+            } else {
+              doricFriseResult[1][i].position.x = distBetwCols/2*i - distBetwCols;
+            }
+          }
+
+          doricFriseResult[1][i].position.y = heightColumn+distBetwCols/4;
+        }
+
+      }
+
+      function drawOneSideColumns(angleRotation = false, color = 'lightgoldenrodyellow', heightColumn = 10)
+      {
+        var columnModel = new THREE.CylinderGeometry( 1, 0.8, heightColumn, 12 );
+        var material = new THREE.MeshStandardMaterial({color: color});
+        var cylinder = new THREE.Mesh(columnModel, material);
+        if (angleRotation !== true) {
+          cylinder.rotation.z = Math.PI / 2;
+          cylinder.rotation.y = Math.PI / 2;
+          cylinder.rotation.x = Math.PI / 2;
+        }
+        return cylinder;
+      }
+
+      function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20)
+      {
+        var podiumModel = new THREE.BoxGeometry( sizePodiumLength, 5, sizePodiumWidth, 12 );
+        var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+        var box = new THREE.Mesh(podiumModel, material);
+        return box;
+      }
+
+      function drawArchitrave(sizeArchitraveLength = 20, sizeArchitraveWidth = 20)
+      {
+        var architraveModel = new THREE.BoxGeometry( sizeArchitraveLength, 1.25, sizeArchitraveWidth, 12 );
+        var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+        var box = new THREE.Mesh(architraveModel, material);
+        return box;
+      }
+
+      function drawDoricFrise(sizeDoricFriseLength = 20, sizeDoricFriseWidth = 20, metopesNumber, triglyphLength = 1)
+      {
+        var doricFriseModel = new THREE.BoxGeometry( sizeDoricFriseLength, 1.25, sizeDoricFriseWidth, 12 );
+        var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+        var box1 = new THREE.Mesh(doricFriseModel, material);
+
+        var box2 = []
+        var triglypheModel;
+        var material;
+        for (var numCol = 1; numCol <= metopesNumber; numCol++) {
+          triglypheModel = new THREE.BoxGeometry( triglyphLength, 1.25, triglypheWidth = 0.3, 10 );
+          material = new THREE.MeshStandardMaterial({color: 'red'});
+          box2[numCol] = new THREE.Mesh(triglypheModel, material);
+        }
+        return [box1, box2];
+      }
+
+      function setUp(scene) {
+        document.getElementById('textReloadPage').style.display = '';
+        document.getElementById('beforeLoadingSceneOptions').style.display = 'none';
+        // create a WebGLRenderer and set its width and height
+        var renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        // add the automatically created canvas element to the page
+        document.body.appendChild( renderer.domElement );
+
+        // create a Scene
+        var onRenderFcts= [];
+        scene.name = 'scene';
+
+        // create a PerspectiveCamera
+        var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 10000);
+        camera.position.set( 0, 0, 100 );
+        camera.fov = 15; // ZOOM
+        camera.updateProjectionMatrix();
+        var aspect = window.innerWidth / window.innerHeight;
+        var nearClippingPlane = 0.1;
+        var farClippingPlane = 1000;
+        const width = 30;
+        const height = 30;
+
+        let geometry = new THREE.Geometry()
+        geometry.vertices.push(new THREE.Vector3(-5, 0, 0))
+        geometry.vertices.push(new THREE.Vector3(5, 0, 0))
+        let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00 }))
+
 
         //////////////////////////////////////////////////////////////////////////////////
-      	//		set 3 point lighting						//
-      	//////////////////////////////////////////////////////////////////////////////////
+        //		set 3 point lighting						//
+        //////////////////////////////////////////////////////////////////////////////////
         ;(function()
         {
           // add a ambient light
@@ -188,14 +269,13 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           scene.add( light )
         })()
 
-  			scene.add( line );
+        scene.add( line );
 
-  			const size = 100;
-  			const divisions = 10;
+        const size = 100;
+        const divisions = 10;
 
-  			const gridHelper = new THREE.GridHelper( size, divisions );
-  			scene.add( gridHelper );
-
+        const gridHelper = new THREE.GridHelper( size, divisions );
+        scene.add( gridHelper );
 
         //////////////////////////////////////////////////////////////////////////////////
         //		Camera Controls							//
@@ -212,64 +292,28 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         })
 
         //////////////////////////////////////////////////////////////////////////////////
-      	//		render the scene						//
-      	//////////////////////////////////////////////////////////////////////////////////
-      	onRenderFcts.push(function(){
-      		renderer.render( scene, camera );
-      	})
+        //		render the scene						//
+        //////////////////////////////////////////////////////////////////////////////////
+        onRenderFcts.push(function(){
+          renderer.render( scene, camera );
+        })
 
         //////////////////////////////////////////////////////////////////////////////////
-      	//		loop runner							//
-      	//////////////////////////////////////////////////////////////////////////////////
-      	var lastTimeMsec= null
-      	requestAnimationFrame(function animate(nowMsec){
-      		// keep looping
-      		requestAnimationFrame( animate );
-      		// measure time
-      		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-      		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-      		lastTimeMsec	= nowMsec
-      		// call each update function
-      		onRenderFcts.forEach(function(onRenderFct){
-      			onRenderFct(deltaMsec/1000, nowMsec/1000)
-      		})
-      	})
-
-        function drawOneSideColumns(angleRotation = false, color = 'lightgoldenrodyellow') // ctx, x_StartingPoint, y_StartingPoint, oneSquareSize, resultSquareLength, resultSquareWidth, numberColumns, cardinalSide
-        {
-          var columnModel = new THREE.CylinderGeometry( 1, 0.8, 10, 12 );
-          var material = new THREE.MeshStandardMaterial({color: color});
-          var cylinder = new THREE.Mesh(columnModel, material);
-          if (angleRotation !== true) {
-            // cylinder.rotation.x = Math.PI / 2;
-            cylinder.rotation.z = Math.PI / 2;
-            cylinder.rotation.y = Math.PI / 2;
-            cylinder.rotation.x = Math.PI / 2;
-          }
-          return cylinder;
-
-          // var fixedColumnDistanceXorY = x_StartingPoint - (oneSquareSize/2);
-          // var fixedColumnPositionXorY = y_StartingPoint - (oneSquareSize/2);
-          // var columnRadius = oneSquareSize/4;
-          //
-          // for (var col = 1 ; col <= numberColumns ; col++)
-          // {
-          //   if (cardinalSide == 'north')
-          //   {
-          //     drawColonnade(ctx, fixedColumnDistanceXorY, fixedColumnPositionXorY, oneSquareSize, col, 'north');
-          //   } else if (cardinalSide == 'south') {
-          //     drawColonnade(ctx, fixedColumnDistanceXorY, fixedColumnPositionXorY, oneSquareSize, col, 'south', resultSquareLength);
-          //   }
-          // }
-        }
-
-        function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20) // ctx, x_StartingPoint, y_StartingPoint, oneSquareSize, resultSquareLength, resultSquareWidth, numberColumns, cardinalSide
-        {
-          var podiumModel = new THREE.BoxGeometry( sizePodiumLength, 5, sizePodiumWidth, 12 );
-          var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
-          var box = new THREE.Mesh(podiumModel, material);
-          return box;
-        }
+        //		loop runner							//
+        //////////////////////////////////////////////////////////////////////////////////
+        var lastTimeMsec= null
+        requestAnimationFrame(function animate(nowMsec){
+          // keep looping
+          requestAnimationFrame( animate );
+          // measure time
+          lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+          var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+          lastTimeMsec	= nowMsec
+          // call each update function
+          onRenderFcts.forEach(function(onRenderFct){
+            onRenderFct(deltaMsec/1000, nowMsec/1000)
+          })
+        })
       }
 
     </script>
