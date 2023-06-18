@@ -39,8 +39,8 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       </select>
 
       Rule Number Long Side : <select id="factorRuleNumberColLongSide">
-        <option value="two_n_minus_one">2n - 1</option>
-        <option selected="selected" value="two_n">2n</option>
+        <option selected="selected" value="two_n_minus_one">2n - 1</option>
+        <option value="two_n">2n</option>
         <option value="two_n_plus_one">2n + 1</option>
       </select>
 
@@ -126,7 +126,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var widthAndLengthSide = createOneSideCol('south', numberColShortSide, false, distBetwCols, heightColPosition, heightColumn, compensatingHeightCol, heightCapital, idFactorRuleNumberColSide, numberColShortSide, numberColLongSide, scene);
 
         widthSide = widthAndLengthSide[0];
-        lengthSide = widthAndLengthSide[1];
+        lengthSide = widthAndLengthSide[1]
 
         podiumResult = drawPodium(distBetwCols*numberColShortSide, distBetwCols*numberColLongSide, podiumHeight);
         scene.add(podiumResult);
@@ -264,7 +264,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
             if (iCol == numberCol-1) {
               widthSide = iCol*distBetwCols
               if (idFactorRuleNumberColSide == 'two_n_minus_one') {
-                lengthSide = iCol*distBetwCols
+                lengthSide = widthSide
               } else if (idFactorRuleNumberColSide == 'two_n') {
                 lengthSide = iCol*distBetwCols+distBetwCols/2
               } else if (idFactorRuleNumberColSide == 'two_n_plus_one') {
