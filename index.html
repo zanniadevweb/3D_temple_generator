@@ -29,9 +29,9 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
-        <option selected="selected" value="4">4</option>
+        <option value="4">4</option>
         <option value="5">5</option>
-        <option  value="6">6</option>
+        <option selected="selected"  value="6">6</option>
         <option value="7">7</option>
         <option value="8">8</option>
         <option value="9">9</option>
@@ -39,7 +39,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       </select>
 
       Rule Number Long Side : <select id="factorRuleNumberColLongSide">
-        <option  value="two_n_minus_one">2n - 1</option>
+        <option value="two_n_minus_one">2n - 1</option>
         <option selected="selected" value="two_n">2n</option>
         <option value="two_n_plus_one">2n + 1</option>
       </select>
@@ -51,13 +51,13 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="9">9</option>
         <option value="10">10</option>
         <option value="11">11</option>
-        <option   value="12">12</option>
-        <option  value="13">13</option>
+        <option value="12">12</option>
+        <option selected="selected" value="13">13</option>
         <option value="14">14</option>
         <option value="15">15</option>
         <option value="16">16</option>
         <option value="17">17</option>
-        <option  selected="selected" value="18">18</option>
+        <option value="18">18</option>
         <option value="19">19</option>
         <option value="20">20</option>
       </select>
@@ -78,6 +78,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var idFactorRuleNumberColSide = document.getElementById('factorRuleNumberColLongSide').value
         // ----------------------------
         var numberCol = document.getElementById('numberColumnsFacade').value;
+        var heightEchinus = 1;
         var heightColumn = document.getElementById('heightColumn').value;
         var distBetwCols = 5;
         var thicknessColumn = 2;
@@ -100,6 +101,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var heightFrontonPosition = -10
         var heightColPosition = 0;
         var heightCapital = 0.75;
+        var compensatingCapitalHeight = 2.75;
 
         heightColPosition = heightColumn - heightPodiumPosition - podiumHeight - architraveHeight - doricFriseHeight + compensatingHeightCol;
 
@@ -114,12 +116,15 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         // FRONT
         for (var iCol = 0; iCol < numberCol; iCol++) {
           columnResult = drawOneSideColumns(false, 'blue', heightColumn, heightCapital);
-          scene.add(columnResult[0]);
+          scene.add(columnResult[0]); // FÛT
           columnResult[0].position.x = iCol*distBetwCols;
-          columnResult[0].position.y = heightColPosition;
-          scene.add(columnResult[1]);
+          columnResult[0].position.y = heightColPosition + 0.25;
+          scene.add(columnResult[2]); // ECHINE
+          columnResult[2].position.x = iCol*distBetwCols;
+          columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+          scene.add(columnResult[1]); // ABAQUE
           columnResult[1].position.x = iCol*distBetwCols;
-          columnResult[1].position.y = heightColPosition-compensatingHeightCol+3;
+          columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75;
           if (iCol == numberCol-1) {
             if (idFactorRuleNumberColSide == 'two_n_minus_one') {
               lengthSide = iCol*distBetwCols
@@ -134,12 +139,15 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         // LEFT SIDE
         for (var iCol = 0; iCol < numberColLongSide; iCol++) {
           columnResult = drawOneSideColumns(false, 'green', heightColumn, heightCapital);
-          scene.add(columnResult[0]);
+          scene.add(columnResult[0]); // FÛT
           columnResult[0].position.z = -iCol*distBetwCols;
-          columnResult[0].position.y = heightColPosition;
-          scene.add(columnResult[1]);
+          columnResult[0].position.y = heightColPosition + 0.25;
+          scene.add(columnResult[2]); // ECHINE
+          columnResult[2].position.z = -iCol*distBetwCols;
+          columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+          scene.add(columnResult[1]); // ABAQUE
           columnResult[1].position.z = -iCol*distBetwCols;
-          columnResult[1].position.y = heightColPosition-compensatingHeightCol+3;
+          columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
           if (iCol == numberCol-1) {
             widthSide = iCol*distBetwCols
           }
@@ -148,27 +156,35 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         // BACK SIDE
         for (var iCol = 0; iCol < numberCol; iCol++) {
           columnResult = drawOneSideColumns(false, 'red', heightColumn, heightCapital);
-          scene.add(columnResult[0]);
+          scene.add(columnResult[0]); // FÛT
           columnResult[0].position.z = (-distBetwCols*numberColLongSide)+distBetwCols;
           columnResult[0].position.x = iCol*distBetwCols;
-          columnResult[0].position.y = heightColPosition;
-          scene.add(columnResult[1]);
+          columnResult[0].position.y = heightColPosition + 0.25;
+          scene.add(columnResult[2]); // ECHINE
+          columnResult[2].position.z = (-distBetwCols*numberColLongSide)+distBetwCols
+          columnResult[2].position.x = iCol*distBetwCols;
+          columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+          scene.add(columnResult[1]); // ABAQUE
           columnResult[1].position.z = (-distBetwCols*numberColLongSide)+distBetwCols
           columnResult[1].position.x = iCol*distBetwCols;
-          columnResult[1].position.y = heightColPosition-compensatingHeightCol+3;
+          columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
         }
 
         // RIGHT SIDE
         for (var iCol = 0; iCol < numberColLongSide; iCol++) {
           columnResult = drawOneSideColumns(false, 'white', heightColumn, heightCapital);
-          scene.add(columnResult[0]);
+          scene.add(columnResult[0]); // FÛT
           columnResult[0].position.z = -iCol*distBetwCols;
           columnResult[0].position.x = (distBetwCols*numberCol)-distBetwCols;
-          columnResult[0].position.y = heightColPosition;
-          scene.add(columnResult[1]);
+          columnResult[0].position.y = heightColPosition + 0.25;
+          scene.add(columnResult[2]); // ECHINE
+          columnResult[2].position.z = -iCol*distBetwCols;
+          columnResult[2].position.x = (distBetwCols*numberCol)-distBetwCols;
+          columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+          scene.add(columnResult[1]); // ABAQUE
           columnResult[1].position.z = -iCol*distBetwCols;
           columnResult[1].position.x = (distBetwCols*numberCol)-distBetwCols;
-          columnResult[1].position.y = heightColPosition-compensatingHeightCol+3;
+          columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
         }
 
         podiumResult = drawPodium(distBetwCols*numberCol, distBetwCols*numberColLongSide, podiumHeight);
@@ -181,7 +197,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         scene.add(architraveResult);
         architraveResult.position.z = -lengthSide;
         architraveResult.position.x = widthSide/2;
-        architraveResult.position.y = heightColumn;
+        architraveResult.position.y = parseInt(heightColumn) + compensatingCapitalHeight;
 
         // TODO : Ici c'est un périptère donc 4 côtés à répliquer.
         // allMetopesNumber = parseInt(numberColLongSide)*2 + parseInt(numberCol)*2 + 2;
@@ -195,7 +211,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         scene.add(doricFriseResult[0]);
         doricFriseResult[0].position.z = -lengthSide;
         doricFriseResult[0].position.x = widthSide/2;
-        doricFriseResult[0].position.y = heightColumn - 1;
+        doricFriseResult[0].position.y = parseInt(heightColumn) - 1 + compensatingCapitalHeight;
 
         for (var i = 1; i <= shortSideMetopesNumber; i++) {
           scene.add(doricFriseResult[1][i]);
@@ -214,7 +230,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
             }
           }
 
-          doricFriseResult[1][i].position.y = heightColumn;
+          doricFriseResult[1][i].position.y = parseInt(heightColumn) + compensatingCapitalHeight;
         }
 
         if (idFactorRuleNumberColSide == 'two_n_minus_one') {
@@ -250,15 +266,19 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         scene.add(frontonResult);
         frontonResult.position.z = -lengthSide*2 -2.5; // TODO
         frontonResult.position.x = widthSide/2;
-        frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton - compensatingWidthTemple;
+        frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton - compensatingWidthTemple + compensatingCapitalHeight;
 
       }
 
       function drawOneSideColumns(angleRotation = false, color = 'lightgoldenrodyellow', heightColumn = 10, heightCapital = 5)
       {
-        var capitalModel = new THREE.BoxGeometry( 3, heightCapital, 3, 12 );
+        var abacusModel = new THREE.BoxGeometry( 3, heightCapital, 3, 12 );
         var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
-        var boxCapital = new THREE.Mesh(capitalModel, material);
+        var boxAbacus = new THREE.Mesh(abacusModel, material);
+
+        var echinusModel = new THREE.CylinderGeometry( 1.5, heightCapital, 0.75, 12 );
+        var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+        var cylinderEchinus = new THREE.Mesh(echinusModel, material);
 
         var columnModel = new THREE.CylinderGeometry( 1, 0.8, heightColumn, 12 );
         var material = new THREE.MeshStandardMaterial({color: color});
@@ -268,7 +288,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           cylinder.rotation.y = Math.PI / 2;
           cylinder.rotation.x = Math.PI / 2;
         }
-        return [cylinder, boxCapital];
+        return [cylinder, boxAbacus, cylinderEchinus];
       }
 
       function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20, podiumHeight = 5)
