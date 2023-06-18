@@ -29,9 +29,9 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
-        <option selected="selected" value="4">4</option>
+        <option  value="4">4</option>
         <option value="5">5</option>
-        <option value="6">6</option>
+        <option selected="selected" value="6">6</option>
         <option value="7">7</option>
         <option value="8">8</option>
         <option value="9">9</option>
@@ -44,11 +44,29 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="two_n_plus_one">2n + 1</option>
       </select>
 
+      Height Columns (m) : <select id="heightColumn">
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option selected="selected" value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+      </select>
+
       <button onclick="generate3dTemple()">GENERATE 3D TEMPLE</button>
     </div>
 
     <script>
-      // generate3dTemple()
+      generate3dTemple()
 
       function generate3dTemple() {
         var scene = new THREE.Scene();
@@ -60,18 +78,34 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var idFactorRuleNumberColSide = document.getElementById('factorRuleNumberColLongSide').value
         // ----------------------------
         var numberCol = document.getElementById('numberColumnsFacade').value;
-        var heightColumn = 10;
+        var heightColumn = document.getElementById('heightColumn').value;
         var distBetwCols = 5;
         var thicknessColumn = 2;
+        var rangeHeightColumns = [6, 20];
+
+        var compensatingHeightColArray = [null,null,null,null,null,null,2,1,1,0,0,-1,-1,-2,-2,-3,-3,-4,-4,-5,-5];
+        var compensatingHeightCol = 0;
+        compensatingHeightCol = compensatingHeightColArray[heightColumn];
+
+        var compensatingHeightFrontonArray = [null,null,null,null,null,null,2.5,3.5,4.5,5.5,6.5,7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,15.5,16.5];
+        var compensatingHeightFronton = 0;
+        compensatingHeightFronton = compensatingHeightFrontonArray[heightColumn];
         // ----------------------------
 
         var podiumResult;
-        // var goldenNumber = 1.618
+        var podiumHeight = 5;
         var columnResult;
         var lengthSide = 0;
         var widthSide = 0;
 
         var numberColLongSide = 0;
+        var architraveHeight = 1.25
+        var doricFriseHeight = 1.25
+        var heightPodiumPosition = -2.5
+        var heightFrontonPosition = -10
+        var heightColPosition = 0;
+
+        heightColPosition = heightColumn - heightPodiumPosition - podiumHeight - architraveHeight - doricFriseHeight + compensatingHeightCol;
 
         if (idFactorRuleNumberColSide == 'two_n_minus_one') {
           numberColLongSide = numberCol*2 - 1;
@@ -86,7 +120,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           columnResult = drawOneSideColumns(false, 'blue', heightColumn);
           scene.add(columnResult);
           columnResult.position.x = iCol*distBetwCols;
-          columnResult.position.y = distBetwCols;
+          columnResult.position.y = heightColPosition;
           if (iCol == numberCol-1) {
             if (idFactorRuleNumberColSide == 'two_n_minus_one') {
               lengthSide = iCol*distBetwCols
@@ -103,7 +137,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           columnResult = drawOneSideColumns(false, 'green', heightColumn);
           scene.add(columnResult);
           columnResult.position.z = -iCol*distBetwCols;
-          columnResult.position.y = distBetwCols;
+          columnResult.position.y = heightColPosition;
           if (iCol == numberCol-1) {
             widthSide = iCol*distBetwCols
           }
@@ -115,7 +149,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           scene.add(columnResult);
           columnResult.position.z = (-distBetwCols*numberColLongSide)+distBetwCols;
           columnResult.position.x = iCol*distBetwCols;
-          columnResult.position.y = distBetwCols;
+          columnResult.position.y = heightColPosition;
         }
 
         // RIGHT SIDE
@@ -124,14 +158,14 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           scene.add(columnResult);
           columnResult.position.z = -iCol*distBetwCols;
           columnResult.position.x = (distBetwCols*numberCol)-distBetwCols;
-          columnResult.position.y = distBetwCols;
+          columnResult.position.y = heightColPosition;
         }
 
-        podiumResult = drawPodium(distBetwCols*numberCol, distBetwCols*numberColLongSide);
+        podiumResult = drawPodium(distBetwCols*numberCol, distBetwCols*numberColLongSide, podiumHeight);
         scene.add(podiumResult);
         podiumResult.position.z = -lengthSide;
         podiumResult.position.x = widthSide/2;
-        podiumResult.position.y = -2.5;
+        podiumResult.position.y = heightPodiumPosition;
 
         architraveResult = drawArchitrave(distBetwCols*numberCol, distBetwCols*numberColLongSide);
         scene.add(architraveResult);
@@ -147,11 +181,11 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         // metopesNumber = metopesNumber*4; // TODO : Ici c'est un périptère donc 4 côtés à répliquer.
 
-        doricFriseResult = drawDoricFrise(distBetwCols*numberCol, distBetwCols*numberColLongSide, shortSideMetopesNumber, triglyphLength);
+        doricFriseResult = drawDoricFrise(distBetwCols*numberCol, distBetwCols*numberColLongSide, shortSideMetopesNumber, triglyphLength, doricFriseHeight);
         scene.add(doricFriseResult[0]);
         doricFriseResult[0].position.z = -lengthSide;
         doricFriseResult[0].position.x = widthSide/2;
-        doricFriseResult[0].position.y = heightColumn+distBetwCols/4;
+        doricFriseResult[0].position.y = heightColumn - 1;
 
         for (var i = 1; i <= shortSideMetopesNumber; i++) {
           scene.add(doricFriseResult[1][i]);
@@ -170,8 +204,14 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
             }
           }
 
-          doricFriseResult[1][i].position.y = heightColumn+distBetwCols/4;
+          doricFriseResult[1][i].position.y = heightColumn;
         }
+
+        frontonResult = drawFronton(distBetwCols*numberCol, distBetwCols*numberColLongSide, podiumHeight);
+        scene.add(frontonResult);
+        frontonResult.position.z = -lengthSide*2 -2.5; // TODO
+        frontonResult.position.x = widthSide/2;
+        frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton;
 
       }
 
@@ -188,25 +228,25 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         return cylinder;
       }
 
-      function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20)
+      function drawPodium(sizePodiumLength = 20, sizePodiumWidth = 20, podiumHeight = 5)
       {
-        var podiumModel = new THREE.BoxGeometry( sizePodiumLength, 5, sizePodiumWidth, 12 );
+        var podiumModel = new THREE.BoxGeometry( sizePodiumLength, podiumHeight, sizePodiumWidth, 12 );
         var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
         var box = new THREE.Mesh(podiumModel, material);
         return box;
       }
 
-      function drawArchitrave(sizeArchitraveLength = 20, sizeArchitraveWidth = 20)
+      function drawArchitrave(sizeArchitraveLength = 20, sizeArchitraveWidth = 20, architraveHeight = 1.25)
       {
-        var architraveModel = new THREE.BoxGeometry( sizeArchitraveLength, 1.25, sizeArchitraveWidth, 12 );
+        var architraveModel = new THREE.BoxGeometry( sizeArchitraveLength, architraveHeight, sizeArchitraveWidth, 12 );
         var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
         var box = new THREE.Mesh(architraveModel, material);
         return box;
       }
 
-      function drawDoricFrise(sizeDoricFriseLength = 20, sizeDoricFriseWidth = 20, metopesNumber, triglyphLength = 1)
+      function drawDoricFrise(sizeDoricFriseLength = 20, sizeDoricFriseWidth = 20, metopesNumber, triglyphLength = 1, doricFriseHeight = 1.25)
       {
-        var doricFriseModel = new THREE.BoxGeometry( sizeDoricFriseLength, 1.25, sizeDoricFriseWidth, 12 );
+        var doricFriseModel = new THREE.BoxGeometry( sizeDoricFriseLength, doricFriseHeight, sizeDoricFriseWidth, 12 );
         var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
         var box1 = new THREE.Mesh(doricFriseModel, material);
 
@@ -219,6 +259,19 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           box2[numCol] = new THREE.Mesh(triglypheModel, material);
         }
         return [box1, box2];
+      }
+
+      function drawFronton(sizeFrontonLength = 20, sizeFrontonWidth = 20, frontonHeight = 5) {
+        var triangleShape = new THREE.Shape();
+        var baseValueShapeTriangle = 16;
+        var heightTriangle = -12;
+        triangleShape.moveTo(-baseValueShapeTriangle, -baseValueShapeTriangle);
+        triangleShape.lineTo(0, heightTriangle);
+        triangleShape.lineTo(baseValueShapeTriangle, -baseValueShapeTriangle);
+        triangleShape.lineTo(-baseValueShapeTriangle, -baseValueShapeTriangle);
+        var extrudedGeometry = new THREE.ExtrudeGeometry(triangleShape, {amount: sizeFrontonWidth + 2, bevelEnabled: false});
+        var extrudedMesh = new THREE.Mesh(extrudedGeometry, new THREE.MeshPhongMaterial({color: 'lightgoldenrodyellow'}));
+        return extrudedMesh;
       }
 
       function setUp(scene) {
@@ -237,7 +290,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         // create a PerspectiveCamera
         var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 10000);
         camera.position.set( 0, 0, 100 );
-        camera.fov = 15; // ZOOM
+        camera.fov = 30; // ZOOM
         camera.updateProjectionMatrix();
         var aspect = window.innerWidth / window.innerHeight;
         var nearClippingPlane = 0.1;
