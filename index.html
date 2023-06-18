@@ -29,7 +29,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
-        <option  value="4">4</option>
+        <option value="4">4</option>
         <option value="5">5</option>
         <option selected="selected" value="6">6</option>
         <option value="7">7</option>
@@ -39,7 +39,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       </select>
 
       Rule Number Long Side : <select id="factorRuleNumberColLongSide">
-        <option value="two_n_minus_one">2n - 1</option>
+        <option selected="selected" value="two_n_minus_one">2n - 1</option>
         <option value="two_n">2n</option>
         <option value="two_n_plus_one">2n + 1</option>
       </select>
@@ -52,9 +52,9 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         <option value="10">10</option>
         <option value="11">11</option>
         <option value="12">12</option>
-        <option value="13">13</option>
+        <option selected="selected" value="13">13</option>
         <option value="14">14</option>
-        <option selected="selected" value="15">15</option>
+        <option value="15">15</option>
         <option value="16">16</option>
         <option value="17">17</option>
         <option value="18">18</option>
@@ -86,10 +86,6 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var compensatingHeightColArray = [null,null,null,null,null,null,2,1,1,0,0,-1,-1,-2,-2,-3,-3,-4,-4,-5,-5];
         var compensatingHeightCol = 0;
         compensatingHeightCol = compensatingHeightColArray[heightColumn];
-
-        var compensatingHeightFrontonArray = [null,null,null,null,null,null,2.5,3.5,4.5,5.5,6.5,7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,15.5,16.5];
-        var compensatingHeightFronton = 0;
-        compensatingHeightFronton = compensatingHeightFrontonArray[heightColumn];
         // ----------------------------
 
         var podiumResult;
@@ -207,16 +203,50 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
           doricFriseResult[1][i].position.y = heightColumn;
         }
 
-        frontonResult = drawFronton(distBetwCols*numberCol, distBetwCols*numberColLongSide, podiumHeight);
+        if (idFactorRuleNumberColSide == 'two_n_minus_one') {
+          compensatingRuleNumberCol = 0;
+        } else if (idFactorRuleNumberColSide == 'two_n') {
+          compensatingRuleNumberCol = 2;
+        } else if (idFactorRuleNumberColSide == 'two_n_plus_one') {
+          compensatingRuleNumberCol = 5;
+        }
+
+        var compensatingNumberColArray = [null,7,9,12,14,17,19,22,24,27,29];
+        var compensatingNumberCol = 0;
+        compensatingNumberCol = compensatingNumberColArray[numberCol] + compensatingRuleNumberCol;
+
+        var compensatingWidthTempleArray = [null,null,null,null,null,null,2.5,3.5,4.5,5.5,6.5,7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,15.5,16.5];
+        var compensatingWidthTemple = 0;
+
+        compensatingWidthTemple = compensatingWidthTempleArray[heightColumn] -lengthSide; - compensatingNumberCol
+
+        var compensatingHeightTempleArray = [null,null,null,null,null,null,13.5,14.5,15.5,16.5,17.5,18.5,19.5,20.5,21.5,22.5,23.5,24.5,25.5,26.5,27.5];
+        var compensatingHeightTemple = 0;
+        compensatingHeightTemple = compensatingHeightTempleArray[heightColumn] - compensatingNumberCol;
+
+        var compensatingHeightFrontonArray = [null,null,null,null,null,null,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28];
+        var compensatingHeightFronton = 0;
+        compensatingHeightFronton = compensatingHeightFrontonArray[heightColumn] - compensatingNumberCol;
+
+        var compensatingHeightTriangleArray = [null,null,null,null,null,null,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9];
+        var compensatingHeightTriangle = 0;
+        compensatingHeightTriangle = compensatingHeightTriangleArray[heightColumn] - compensatingNumberCol;
+
+        frontonResult = drawFronton(distBetwCols*numberCol, distBetwCols*numberColLongSide, podiumHeight, compensatingWidthTemple, compensatingHeightTemple, compensatingHeightTriangle);
         scene.add(frontonResult);
         frontonResult.position.z = -lengthSide*2 -2.5; // TODO
         frontonResult.position.x = widthSide/2;
-        frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton;
+        frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton - compensatingWidthTemple;
 
       }
 
       function drawOneSideColumns(angleRotation = false, color = 'lightgoldenrodyellow', heightColumn = 10)
       {
+        // var capitalModel = new THREE.BoxGeometry( 3, 3, 3, 12 );
+        // var material = new THREE.MeshStandardMaterial({color: 'lightgoldenrodyellow'});
+        // var box = new THREE.Mesh(podiumModel, material);
+        // return box;
+
         var columnModel = new THREE.CylinderGeometry( 1, 0.8, heightColumn, 12 );
         var material = new THREE.MeshStandardMaterial({color: color});
         var cylinder = new THREE.Mesh(columnModel, material);
@@ -261,10 +291,11 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         return [box1, box2];
       }
 
-      function drawFronton(sizeFrontonLength = 20, sizeFrontonWidth = 20, frontonHeight = 5) {
+      function drawFronton(sizeFrontonLength = 20, sizeFrontonWidth = 20, frontonHeight = 5, compensatingWidthTemple, compensatingHeightTemple, compensatingWidthTempleArray) {
         var triangleShape = new THREE.Shape();
-        var baseValueShapeTriangle = 16;
-        var heightTriangle = -12;
+        var localCompensatingWidthTemple = -compensatingWidthTemple;
+        var baseValueShapeTriangle = compensatingHeightTemple + localCompensatingWidthTemple;
+        var heightTriangle = -15 - localCompensatingWidthTemple - compensatingWidthTempleArray;
         triangleShape.moveTo(-baseValueShapeTriangle, -baseValueShapeTriangle);
         triangleShape.lineTo(0, heightTriangle);
         triangleShape.lineTo(baseValueShapeTriangle, -baseValueShapeTriangle);
