@@ -201,36 +201,36 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
               columnResult[0].position.z = cardinalDirection * iCol*distBetwCols;
               columnResult[0].position.y = heightColPosition + 0.25;
               columnResult[2].position.z = cardinalDirection * iCol*distBetwCols;
-              columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+              columnResult[2].position.y = heightColPosition-compensatingHeightCol + distBetwCols;
               columnResult[1].position.z = cardinalDirection * iCol*distBetwCols;
-              columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
+              columnResult[1].position.y = heightColPosition-compensatingHeightCol + distBetwCols + heightCapital
             } else if (cardinalDirection == -1 && cardinalSide === 'east') {
               columnResult[0].position.z = cardinalDirection * iCol*distBetwCols;
               columnResult[0].position.x = (distBetwCols*numberColShortSide)-distBetwCols;
               columnResult[0].position.y = heightColPosition + 0.25;
               columnResult[2].position.z = cardinalDirection * iCol*distBetwCols;
               columnResult[2].position.x = (distBetwCols*numberColShortSide)-distBetwCols;
-              columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+              columnResult[2].position.y = heightColPosition-compensatingHeightCol + distBetwCols;
               columnResult[1].position.z = cardinalDirection * iCol*distBetwCols;
               columnResult[1].position.x = (distBetwCols*numberColShortSide)-distBetwCols;
-              columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
+              columnResult[1].position.y = heightColPosition-compensatingHeightCol + distBetwCols + heightCapital
             } else if (cardinalDirection == 1 && cardinalSide === 'north') {
               columnResult[0].position.x = cardinalDirection * iCol*distBetwCols;
               columnResult[0].position.y = heightColPosition + 0.25;
               columnResult[2].position.x = cardinalDirection * iCol*distBetwCols;
-              columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+              columnResult[2].position.y = heightColPosition-compensatingHeightCol + distBetwCols;
               columnResult[1].position.x = cardinalDirection * iCol*distBetwCols;
-              columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75;
+              columnResult[1].position.y = heightColPosition-compensatingHeightCol+ distBetwCols + heightCapital;
             } else if (cardinalDirection == 1 && cardinalSide === 'south') {
               columnResult[0].position.z = (-distBetwCols*numberColLongSide)+distBetwCols;
               columnResult[0].position.x = iCol*distBetwCols;
               columnResult[0].position.y = heightColPosition + 0.25;
               columnResult[2].position.z = (-distBetwCols*numberColLongSide)+distBetwCols
               columnResult[2].position.x = iCol*distBetwCols;
-              columnResult[2].position.y = heightColPosition-compensatingHeightCol+5;
+              columnResult[2].position.y = heightColPosition-compensatingHeightCol + distBetwCols;
               columnResult[1].position.z = (-distBetwCols*numberColLongSide)+distBetwCols
               columnResult[1].position.x = iCol*distBetwCols;
-              columnResult[1].position.y = heightColPosition-compensatingHeightCol+5.75
+              columnResult[1].position.y = heightColPosition-compensatingHeightCol + distBetwCols + heightCapital
             }
 
             if (iCol == numberCol-1) {
