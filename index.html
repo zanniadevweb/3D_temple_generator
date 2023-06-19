@@ -28,7 +28,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       Number columns facade : <select id="numberColumnsFacade">
         <option value="1">1</option>
         <option value="2">2</option>
-        <option value="3">3</option>
+        <option  value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
         <option selected="selected" value="6">6</option>
@@ -45,7 +45,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
       </select>
 
       Height Columns (m) : <select id="heightColumn">
-        <option  value="6">6</option>
+        <option value="6">6</option>
         <option value="7">7</option>
         <option value="8">8</option>
         <option value="9">9</option>
@@ -66,7 +66,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
     </div>
 
     <script>
-      // generate3dTemple()
+       // generate3dTemple()
 
       function generate3dTemple() {
         var scene = new THREE.Scene();
@@ -178,7 +178,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         frontonResult = drawFronton(distBetwCols*numberColShortSide, distBetwCols*numberColLongSide, podiumHeight, compensatingWidthTemple, compensatingHeightTemple, compensatingHeightTriangle, numberColLongSide);
         scene.add(frontonResult);
-        frontonResult.position.z = -lengthSide*2 -2.5;
+        frontonResult.position.z = -lengthSide*2 -3.25;
         frontonResult.position.x = widthSide/2;
         frontonResult.position.y = -heightFrontonPosition*2 + compensatingHeightFronton - compensatingWidthTemple + compensatingCapitalHeight;
 
@@ -344,7 +344,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
 
         doricFriseResult = drawDoricFrise(true, sizeDoricFriseLength, sizeDoricFriseWidth, metopesNumber[1], triglyphLength, doricFriseHeight);
 
-        var compensatingZelseifPositionArray = ['null', 2, -5, -5, -10, -14.75, -14.75, -14.75, -14.75, -20, -25, -25, -25, -30, -35, -40, -40, -45, -45, -45, -50, -55];
+        var compensatingZelseifPositionArray = ['null', 2, -5, -5, -10, -10, -14.75, -20, -20, -20, -25, -25, -25, -30, -35, -40, -40, -45, -45, -45, -50, -55];
         var compensatingZelseifPosition = 0;
         compensatingZelseifPosition = compensatingZelseifPositionArray[numberColLongSide];
         console.log(numberColLongSide)
