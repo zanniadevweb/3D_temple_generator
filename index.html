@@ -258,7 +258,7 @@ https://sbcode.net/threejs/geometry-to-buffergeometry/
         var material = new THREE.MeshLambertMaterial({color: 'lightgoldenrodyellow'});
         var boxAbacus = new THREE.Mesh(abacusModel, material);
 
-        var columnModel = new THREE.CylinderGeometry( 1, 1.25, heightColumn, 12 );
+        var columnModel = new THREE.CylinderGeometry( 1, 1.25, heightColumn, 24);
         var material = new THREE.MeshPhongMaterial({color: color});
         var cylinder = new THREE.Mesh(columnModel, material);
         return [cylinder, boxAbacus, cylinderEchinus];
